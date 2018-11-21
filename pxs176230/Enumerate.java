@@ -33,7 +33,7 @@ public class Enumerate<T> {
 
     // n = arr.length, choose k things, d elements arr[0..d-1] done
     // c more elements are needed from arr[d..n-1].  d = k-c.
-    public void permute(int c) {  // To do for LP4
+    public void permute(int c) {
         if(c==0) {
             visit(arr);
         }
