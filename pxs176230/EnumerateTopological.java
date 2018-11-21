@@ -25,10 +25,7 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
         }
         public EnumVertex make(Vertex u) { return new EnumVertex();	}
     }
-
-    private int reduceIndegree(Vertex u){
-        return --get(u).indegree;
-    }
+    
 
     class Selector extends Enumerate.Approver<Vertex> {
         @Override
