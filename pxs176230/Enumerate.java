@@ -39,8 +39,7 @@ public class Enumerate<T> {
         }
         else{
             int d = k - c;  // start of remaining element index
-            permute(c-1);
-            for(int i = d+1; i < arr.length; i++){
+            for(int i = d; i < arr.length; i++){
                 swap(d,i);
                 permute(c-1);
                 swap(d,i);
@@ -134,7 +133,7 @@ public class Enumerate<T> {
     }
 
     public static void main(String args[]) {
-        int n = 4;
+        int n = 16;
         int k = 3;
         if(args.length > 0) { n = Integer.parseInt(args[0]);  k = n; }
         if(args.length > 1) { k = Integer.parseInt(args[1]); }
