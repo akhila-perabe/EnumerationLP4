@@ -1,16 +1,29 @@
+/**
+ * @author Akhila Perabe (axp178830), Pooja Srinivasan (pxs176230), Shreeya Girish Degaonkar (sxd174830)
+ * 
+ * Enumerate topological order for a graph
+ */
+
 package pxs176230;
 
 import rbk.Graph.GraphAlgorithm;
-import rbk.Graph.Timer;
 import rbk.Graph.Vertex;
 import rbk.Graph.Edge;
 import rbk.Graph.Factory;
+
+import java.util.Scanner;
+
 import rbk.Graph;
 
 public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.EnumVertex> {
-    boolean print;  // Set to true to print array in visit
-    long count;      // Number of permutations or combinations visited
+    boolean print;  	// Set to true to print array in visit
+    long count;      	// Number of permutations or combinations visited
     Selector sel;
+    
+    /**
+     * Constructor
+     * @param g
+     */
     public EnumerateTopological(Graph g) {
         super(g, new EnumVertex());
         print = false;
@@ -18,6 +31,9 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
         sel = new Selector();
     }
 
+    /**
+     * Factory class for EnumerateTopological 
+     */
     static class EnumVertex implements Factory {
         int indegree;
         EnumVertex() {
@@ -26,7 +42,9 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
         public EnumVertex make(Vertex u) { return new EnumVertex();	}
     }
 
-
+    /**
+     * Approver class for EnumerateToplogical
+     */
     class Selector extends Enumerate.Approver<Vertex> {
         @Override
         public boolean select(Vertex u) {
@@ -61,16 +79,20 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
     }
 
 
-    // To do: LP4; return the number of topological orders of g
+    /**
+     * Returns the number of topological orders of g
+     * @param flag	true if enumeration required
+     * @return
+     */
     public long enumerateTopological(boolean flag) {
         print = flag;
         intializeIndegrees();
-        enumerateTopological(g.getVertexArray(),g.size(),g.size());
+        enumerateTopological(g.getVertexArray(), g.size());
         return count;
     }
 
     /**
-     * method to initialize indegree of each enumvertex
+     * Initializes indegree of each vertex
      */
     private void intializeIndegrees(){
        for(Vertex v : g.getVertexArray()){
@@ -78,15 +100,28 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
        }
     }
 
+    /**
+     * Swap vertex i and j in the given vertices array
+     * @param vertices
+     * @param i
+     * @param j
+     */
     private void swap(Vertex[] vertices,int i,int j){
         Vertex temp = vertices[i];
         vertices[i] = vertices[j];
         vertices[j] = temp;
     }
 
-    private void enumerateTopological(Vertex[] vertices,int k,int c){
+    /**
+     * Enumerate topological order for the given vertices array
+     * @param vertices
+     * @param k
+     * @param c
+     */
+    private void enumerateTopological(Vertex[] vertices, int c){
+    	int k = vertices.length;
         if(c==0){
-            sel.visit(vertices,k);
+            sel.visit(vertices, k);
         }
         else{
             int d = k - c;
@@ -94,7 +129,7 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
                 Vertex u = vertices[i];
                 if(sel.select(u)){
                     swap(vertices,d,i);
-                    enumerateTopological(vertices,k,c-1);
+                    enumerateTopological(vertices, c-1);
                     swap(vertices,d,i);
                     sel.unselect(u);
                 }
@@ -102,22 +137,39 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
         }
     }
 
-    //-------------------static methods----------------------
+    //-------------------Static methods----------------------
 
+    /**
+     * Returns the count of topological orders
+     * @param g
+     * @return
+     */
     public static long countTopologicalOrders(Graph g) {
         EnumerateTopological et = new EnumerateTopological(g);
         return et.enumerateTopological(false);
     }
 
+    /**
+     * Prints all topological orders and returns count
+     * @param g
+     * @return
+     */
     public static long enumerateTopologicalOrders(Graph g) {
         EnumerateTopological et = new EnumerateTopological(g);
         return et.enumerateTopological(true);
     }
 
+    /**
+     * Sample driver program
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         int VERBOSE = 0;
+        String string = "7 7   1 2 2   1 3 3   2 4 5   3 4 4   4 5 1   1 5 7   6 7 1";
         if(args.length > 0) { VERBOSE = Integer.parseInt(args[0]); }
-        Graph g = Graph.readDirectedGraph(new java.util.Scanner(System.in));
+        Scanner in = args.length > 1 ? new Scanner(new java.io.File(args[1])) : new Scanner(string);
+        Graph g = Graph.readDirectedGraph(in);
         Graph.Timer t = new Graph.Timer();
         long result;
         if(VERBOSE > 0) {

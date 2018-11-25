@@ -1,15 +1,19 @@
+/**
+ * @author Akhila Perabe (axp178830), Pooja Srinivasan (pxs176230), Shreeya Girish Degaonkar (sxd174830)
+ * 
+ * Implementation of PERT algorithm
+ */
+
 package pxs176230;
 
 import rbk.Graph.Vertex;
 import rbk.Graph.Edge;
 import rbk.Graph.GraphAlgorithm;
 import rbk.Graph.Factory;
-import  rbk.Graph;
+import rbk.Graph;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 import pxs176230.DFS;
 
@@ -60,19 +64,41 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
 		}
     }
 
-    int numCritical = 0;
+    int numCritical;	// Number of critical nodes
     
+    /**
+     * Constructor
+     * @param g
+     */
     public PERT(Graph g) {
         super(g, new PERTVertex(null));
     }
     
+    /**
+     * Implements the PERT algorithm 
+     * @return true if g has cycles
+     */
     public boolean pert() {
     	numCritical = 0;
     	
+        //Add edges from s to all vertices
+        //Add edges from all vertices to t
+        Vertex s = g.getVertex(1);
+        Vertex t = g.getVertex(g.size());
+        int m = g.edgeSize();
+        for(Vertex u : g) {
+        	if(s != u)
+        		g.addEdge(s, u, 1, ++m);
+        	if(t != u)
+        		g.addEdge(u, t, 1, ++m);        	
+        }
+    	
+        // Get topological ordering using DFS algorithm
     	DFS dfs = new DFS(g);
     	LinkedList<Vertex> finishedList = (LinkedList<Vertex>) dfs.topologicalOrder1();
     	
     	if(finishedList == null) {
+    		//If g is not DAG
     		return true;
     	}
     	
@@ -110,6 +136,7 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
     				setLc(u, dur);
     			}
     		}
+    		
     		int slack = lc(u) - ec(u);
     		setSlack(u, slack);
     		if(slack == 0) {
@@ -120,67 +147,117 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
         return false;
     }
     
+    /**
+     * Get duration of vertex u
+     * @param u
+     * @return
+     */
     public int duration(Vertex u) {
     	return this.get(u).getDuration();
     }
     
+    /**
+     * Get EC of vertex u
+     * @param u
+     * @return
+     */
     public int ec(Vertex u) {
         return this.get(u).getEc();
     }
 
+    /**
+     * Get LC of vertex u
+     * @param u
+     * @return
+     */
     public int lc(Vertex u) {
         return this.get(u).getLc();
     }
 
+    /**
+     * Get Slack of vertex u
+     * @param u
+     * @return
+     */
     public int slack(Vertex u) {
         return this.get(u).getSlack();
     }
 
+    /**
+     * Set duration of vertex u
+     * @param u
+     * @param d
+     */
     public void setDuration(Vertex u, int d) {
     	this.get(u).setDuration(d);
     }
     
+    /**
+     * Set EC of vertex u
+     * @param u
+     * @param ec
+     */
     public void setEc(Vertex u, int ec) {
     	this.get(u).setEc(ec);
     }
 
+    /**
+     * Set LC of vertex u
+     * @param u
+     * @param lc
+     */
     public void setLc(Vertex u, int lc) {
     	this.get(u).setLc(lc);
     }
     
+    /**
+     * Set slack for vertex u
+     * @param u
+     * @param slack
+     */
     public void setSlack(Vertex u, int slack) {
     	this.get(u).setSlack(slack);
     }
     
+    /**
+     * Returns the length of the critical path
+     * @return
+     */
     public int criticalPath() {
     	//EC of t
         return ec(g.getVertex(g.size()));
     }
 
+    /**
+     * Checks if vertex u is critical node or not
+     * @param u
+     * @return
+     */
     public boolean critical(Vertex u) {
         return slack(u)==0;
     }
 
+    /**
+     * Returns the number of critical nodes in the graph
+     * @return
+     */
     public int numCritical() {
         return numCritical;
     }
 
-    // setDuration(u, duration[u.getIndex()]);
+    /**
+     * Static method to call PERT algorithm
+     * Creates the PERT object and calls obj.pert()
+     * @param g
+     * @param duration
+     * @return
+     */
     public static PERT pert(Graph g, int[] duration) {
     	
         PERT obj = new PERT(g);
-        System.out.println(Arrays.toString(duration));
-
-        //Add edges from s (1) to all vertices
-        //Add edges from all vertices to t
-        Vertex s = g.getVertex(1);
-        Vertex t = g.getVertex(g.size());
+        
+        //Set duration for nodes
         for(Vertex u : g) {
-        	if(s != u)
-        		g.addEdge(s.getIndex(), u.getIndex(), 1);
-        	if(t != u)
-        		g.addEdge(u.getIndex(), t.getIndex(), 1);
-        	
         	obj.setDuration(u, duration[u.getIndex()]);
         }
     	
@@ -193,7 +270,12 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
         }
     }
 
-    /*public static void main(String[] args) throws Exception {
+    /**
+     * Sample driver program
+     * @param args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
         String graph = "11 12   2 4 1   2 5 1   3 5 1   3 6 1   4 7 1   5 7 1   5 8 1   6 8 1   6 9 1   7 10 1   8 10 1   9 10 1      0 3 2 3 2 1 3 2 4 1 0";
         Scanner in;
         // If there is a command line argument, use it as file from which
@@ -216,5 +298,5 @@ public class PERT extends GraphAlgorithm<PERT.PERTVertex> {
                 System.out.println(u + "\t" + p.ec(u) + "\t" + p.lc(u) + "\t" + p.slack(u) + "\t" + p.critical(u));
             }
         }
-    }*/
+    }
 }

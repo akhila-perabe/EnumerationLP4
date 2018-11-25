@@ -1,6 +1,10 @@
-package pxs176230;
+/**
+ * @author Akhila Perabe (axp178830), Pooja Srinivasan (pxs176230), Shreeya Girish Degaonkar (sxd174830)
+ * 
+ * Enumerate permutations of an array
+ */
 
-import java.util.Comparator;
+package pxs176230;
 
 public class Enumerate<T> {
     T[] arr;
@@ -9,7 +13,6 @@ public class Enumerate<T> {
     Approver<T> app;
 
     //-----------------Constructors-------------------
-
     public Enumerate(T[] arr, int k, Approver<T> app) {
         this.arr = arr;
         this.k = k;
@@ -29,37 +32,33 @@ public class Enumerate<T> {
         this(arr, arr.length, new Approver<T>());
     }
 
-    //-------------Methods of Enumerate class: To do-----------------
+    //-------------Methods of Enumerate class-----------------
 
-    // n = arr.length, choose k things, d elements arr[0..d-1] done
-    // c more elements are needed from arr[d..n-1].  d = k-c.
+    /**
+     * Permutation
+     * n = arr.length, choose k things, d elements arr[0..d-1] done
+     * c more elements are needed from arr[d..n-1].  d = k-c.
+     * @param c
+     */
     public void permute(int c) {
         if(c==0) {
             visit(arr);
         }
         else{
             int d = k - c;  // start of remaining element index
-            for(int i = d; i < arr.length; i++){
+            permute(c-1);	// Permutation with arr[d] selected
+            for(int i = d+1; i < arr.length; i++){
                 swap(d,i);
-                permute(c-1);
+                permute(c-1);	// Permuation with arr[i] selected instead of arr[d] 
                 swap(d,i);
             }
         }
     }
 
-
-    // choose c items from A[0..i-1].  In SP11-opt
-    public void combine(int i, int c) {
-    }
-
-    // Still g elements to go.  In SP11-opt
-    public void heap(int g) {
-    }
-
-    // In SP11-opt
-    public void algorithmL(Comparator<T> c) {
-    }
-
+    /**
+     * Visit array
+     * @param array
+     */
     public void visit(T[] array) {
         count++;
         app.visit(array, k);
@@ -68,16 +67,29 @@ public class Enumerate<T> {
     //----------------------Nested class: Approver-----------------------
 
 
-    // Class to decide whether to extend a permutation with a selected item
-    // Extend this class in algorithms that need to enumerate permutations with precedence constraints
+    /**
+     *  Class to decide whether to extend a permutation with a selected item
+     *  Extend this class in algorithms that need to enumerate permutations with precedence constraints
+     */
     public static class Approver<T> {
-        /* Extend permutation by item? */
+        /**
+         * Extend permutation by item?
+         * @param item
+         * @return
+         */
         public boolean select(T item) { return true; }
 
-        /* Backtrack selected item */
+        /**
+         * Backtrack selected item
+         * @param item
+         */
         public void unselect(T item) { }
 
-        /* Visit a permutation or combination */
+        /**
+         * Visit a permutation or combination
+         * @param array
+         * @param k
+         */
         public void visit(T[] array, int k) {
             for (int i = 0; i < k; i++) {
                 System.out.print(array[i] + " ");
@@ -88,12 +100,22 @@ public class Enumerate<T> {
 
     //-----------------------Utilities-----------------------------
 
+    /**
+     * Swap elements at i and j
+     * @param i
+     * @param j
+     */
     void swap(int i, int j) {
         T tmp = arr[i];
         arr[i] = arr[j];
         arr[j] = tmp;
     }
 
+    /**
+     * Reverse the elements from low to high
+     * @param low
+     * @param high
+     */
     void reverse(int low, int high) {
         while(low < high) {
             swap(low, high);
@@ -102,36 +124,24 @@ public class Enumerate<T> {
         }
     }
 
-    //--------------------Static methods----------------------------
+    //-----------------------Static Methods-----------------------------
 
-    // Enumerate permutations of k items out of n = arr.length
+    /**
+     *  Enumerate permutations of k items out of n = arr.length
+     * @param arr
+     * @param k
+     * @return
+     */
     public static<T> Enumerate<T> permute(T[] arr, int k) {
         Enumerate<T> e = new Enumerate<>(arr, k);
         e.permute(k);
         return e;
     }
 
-    // Enumerate combinations of k items out of n = arr.length
-    public static<T> Enumerate<T> combine(T[] arr, int k) {
-        Enumerate<T> e = new Enumerate<>(arr, k);
-        e.combine(0, k);
-        return e;
-    }
-
-    // Enumerate permutations of n = arr.length item, using Heap's algorithm
-    public static<T> Enumerate<T> heap(T[] arr) {
-        Enumerate<T> e = new Enumerate<>(arr, arr.length);
-        e.heap(arr.length);
-        return e;
-    }
-
-    // Enumerate permutations of items in array, using Knuth's algorithm L
-    public static<T> Enumerate<T> algorithmL(T[] arr, Comparator<T> c) {
-        Enumerate<T> e = new Enumerate<>(arr, arr.length);
-        e.algorithmL(c);
-        return e;
-    }
-
+    /**
+     * Sample driver program
+     * @param args
+     */
     public static void main(String args[]) {
         int n = 16;
         int k = 3;
@@ -144,19 +154,6 @@ public class Enumerate<T> {
 
         System.out.println("Permutations: " + n + " " + k);
         Enumerate<Integer> e = permute(arr, k);
-        System.out.println("Count: " + e.count + "\n_________________________");
-
-        System.out.println("combinations: " + n + " " + k);
-        e = combine(arr, k);
-        System.out.println("Count: " + e.count + "\n_________________________");
-
-        System.out.println("Heap Permutations: " + n);
-        e = heap(arr);
-        System.out.println("Count: " + e.count + "\n_________________________");
-
-        Integer[] test = {1,2,2,3,3,4};
-        System.out.println("Algorithm L Permutations: ");
-        e = algorithmL(test, (Integer a, Integer b) -> a.compareTo(b));
         System.out.println("Count: " + e.count + "\n_________________________");
     }
 }

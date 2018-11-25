@@ -1,13 +1,17 @@
+/**
+ * @author Akhila Perabe (axp178830), Pooja Srinivasan (pxs176230), Shreeya Girish Degaonkar (sxd174830)
+ * 
+ * DFS algorithm
+ */
+
 package pxs176230;
 
 import rbk.Graph.Vertex;
 import rbk.Graph.Edge;
 import rbk.Graph.GraphAlgorithm;
 import rbk.Graph.Factory;
-import rbk.Graph.Timer;
 import rbk.Graph;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.LinkedList;
 import java.util.Scanner;
@@ -125,10 +129,5 @@ public class DFS extends GraphAlgorithm<DFS.DFSVertex> {
             System.out.print(u.getName() + " ");
         }
         System.out.println();
-      /*  int numcc = d.connectedComponents();
-        System.out.println("Number of components: " + numcc + "\nu\tcno");
-        for(Vertex u: g) {
-            System.out.println(u + "\t" + d.cno(u) + "\t" + d.get(u).startTime + " " + d.get(u).endTime);
-        }*/
     }
 }
