@@ -46,6 +46,12 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
      * Approver class for EnumerateToplogical
      */
     class Selector extends Enumerate.Approver<Vertex> {
+
+        /**
+         * method returns true if the vertex has indegree 0 and decrements the indegree of adjacent vertices by 1
+         * @param u
+         * @return true if vertex has indegree 0 or false
+         */
         @Override
         public boolean select(Vertex u) {
             if(get(u).indegree == 0) {
@@ -58,6 +64,10 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
             return false;
         }
 
+        /**
+         * unselect method increments all indegree of adjacent vertices by 1
+         * @param u
+         */
         @Override
         public void unselect(Vertex u) {
             for(Edge e : g.incident(u)){
@@ -66,6 +76,11 @@ public class EnumerateTopological extends GraphAlgorithm<EnumerateTopological.En
             }
         }
 
+        /**
+         * method to print the vertices in topological order
+         * @param arr
+         * @param k
+         */
         @Override
         public void visit(Vertex[] arr, int k) {
             count++;
